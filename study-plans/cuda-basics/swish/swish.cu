@@ -2,12 +2,13 @@
 #include <math.h>
 
 __global__ void swish_kernel(const float* input, float* output, int N) {
-    // Write code here
-    const int i = blockIdx.x * blockDim.x + threadIdx.x;
-    if(i < N){
+    const int stride = gridDim.x * blockDim.x; 
+    
+    for(int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i+= stride){
         const float x = input[i];
         output[i] = x / (1.0f + __expf(-x));
     }
+    
 }
 
 extern "C" void solve(const float* input, float* output, int N) {
